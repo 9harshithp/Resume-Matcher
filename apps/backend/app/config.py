@@ -334,7 +334,7 @@ class Settings(BaseSettings):
     port: int = 8000
     reload: bool = False
     log_level: Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"] = "INFO"
-    frontend_base_url: str = "http://localhost:3000"
+    frontend_base_url: str = "http://localhost:3001"
 
     # Total timeout for AI operations, including validation, database preloads,
     # model attempts and persistence. Nested stages share one deadline. It MUST be
@@ -398,7 +398,7 @@ class Settings(BaseSettings):
 
     # CORS Configuration
     cors_origins: list[str] = [
-        "http://localhost:3000",
+        "http://localhost:3001",
         "http://127.0.0.1:3000",
     ]
 

@@ -153,4 +153,4 @@ def test_missing_chromium_system_libraries_get_an_actionable_message() -> None:
         "BrowserType.launch: \nHost system is missing dependencies to run browsers."
     )
     with pytest.raises(PDFRenderError, match="playwright install-deps"):
-        _raise_playwright_error(error, "http://localhost:3000/print/resumes/x")
+        _raise_playwright_error(error, "http://localhost:3001/print/resumes/x")

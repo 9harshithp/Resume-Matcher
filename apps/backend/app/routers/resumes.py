@@ -654,6 +654,7 @@ def _ats_score_model(
             missing_keywords=ats_raw["missing_keywords"],
             injectable_keywords=ats_raw["injectable_keywords"],
             recommendations=ats_raw["recommendations"],
+            alias_matches=ats_raw.get("alias_matches", []),
         )
     except Exception:
         logger.warning("ATS score computation failed", exc_info=True)
@@ -3043,6 +3044,7 @@ def _score_tailored_data(
         missing_keywords=raw["missing_keywords"],
         injectable_keywords=raw["injectable_keywords"],
         recommendations=raw["recommendations"],
+        alias_matches=raw.get("alias_matches", []),
     )
     return ATSScoreRecord(
         score=score, calculated_at=datetime.now(timezone.utc).isoformat()

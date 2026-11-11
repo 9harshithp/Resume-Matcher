@@ -899,6 +899,10 @@ class ATSScore(BaseModel):
         default_factory=list,
         description="Actionable suggestions to improve the ATS score",
     )
+    alias_matches: list[dict[str, str]] = Field(
+        default_factory=list,
+        description="Keywords matched via known synonyms or aliases",
+    )
 
 
 class ATSScoreRecord(BaseModel):

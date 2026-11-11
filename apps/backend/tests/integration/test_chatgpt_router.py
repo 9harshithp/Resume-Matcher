@@ -58,10 +58,10 @@ class TestCrossSiteGuard:
         "headers",
         [
             {},  # not a browser page (curl, scripts)
-            {"Origin": "http://localhost:3000"},
+            {"Origin": "http://localhost:3001"},
             {"Origin": "http://127.0.0.1:3100"},
             {"Origin": "http://[::1]:3000"},
-            {"Referer": "http://localhost:3000/settings"},
+            {"Referer": "http://localhost:3001/settings"},
             # Same-origin: the browser's own Host, as the Next.js proxy forwards it.
             {
                 "Origin": "http://192.168.1.5:3000",
@@ -107,9 +107,9 @@ class TestCallbackPort:
         ("headers", "port"),
         [
             # Through the Next.js proxy (Docker publishes only the frontend port).
-            ({"Origin": "http://localhost:3000"}, 3000),
+            ({"Origin": "http://localhost:3001"}, 3000),
             ({"Origin": "http://127.0.0.1:3100"}, 3100),
-            ({"Referer": "http://localhost:3000/settings"}, 3000),
+            ({"Referer": "http://localhost:3001/settings"}, 3000),
             ({"Origin": "http://localhost"}, 80),
             # Anything else keeps the backend's own port (the ASGI server here).
             ({}, 8123),

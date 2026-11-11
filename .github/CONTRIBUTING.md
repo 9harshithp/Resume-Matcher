@@ -67,7 +67,7 @@ Follow these steps to set up the environment and run the application.
    npm run dev
    ```
 
-5. Open <http://localhost:3000>.
+5. Open <http://localhost:3001>.
 
 ### Docker
 

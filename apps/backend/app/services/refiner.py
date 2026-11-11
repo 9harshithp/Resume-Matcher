@@ -218,6 +218,7 @@ def analyze_keyword_gaps(
     jd_keywords: dict[str, Any],
     tailored: dict[str, Any],
     master: dict[str, Any],
+    allow_aliases: bool = True,
 ) -> KeywordGapAnalysis:
     """Analyze which JD keywords are missing from the tailored resume.
 
@@ -225,6 +226,7 @@ def analyze_keyword_gaps(
         jd_keywords: Extracted job keywords with required_skills, preferred_skills, etc.
         tailored: Current tailored resume data
         master: Master resume data (source of truth)
+        allow_aliases: Whether to accept canonical skill aliases (e.g. k8s for kubernetes)
 
     Returns:
         KeywordGapAnalysis with missing, injectable, and non-injectable keywords
@@ -245,9 +247,9 @@ def analyze_keyword_gaps(
     non_injectable: list[str] = []
 
     for keyword in all_jd_keywords:
-        if not keyword_in_text(keyword, tailored_text):
+        if not keyword_in_text(keyword, tailored_text, allow_aliases=allow_aliases):
             missing.append(keyword)
-            if keyword_in_text(keyword, master_text):
+            if keyword_in_text(keyword, master_text, allow_aliases=allow_aliases):
                 injectable.append(keyword)
             else:
                 non_injectable.append(keyword)
@@ -778,12 +780,14 @@ def job_keyword_terms(jd_keywords: dict[str, Any]) -> list[str]:
 def calculate_keyword_match(
     resume: dict[str, Any],
     jd_keywords: dict[str, Any],
+    allow_aliases: bool = True,
 ) -> float:
     """Calculate keyword match percentage.
 
     Args:
         resume: Resume data dictionary
         jd_keywords: Extracted job keywords
+        allow_aliases: Whether to accept canonical skill aliases (e.g. k8s for kubernetes)
 
     Returns:
         Match percentage (0.0 to 100.0)
@@ -797,8 +801,8 @@ def calculate_keyword_match(
         logger.warning("No keywords found in job description")
         return 0.0
 
-    # SVC-010: Use word boundary matching instead of substring
-    matched = sum(1 for kw in all_keywords if keyword_in_text(kw, resume_text))
+    # SVC-010: Use word boundary matching instead of substring, with optional alias support
+    matched = sum(1 for kw in all_keywords if keyword_in_text(kw, resume_text, allow_aliases=allow_aliases))
     return (matched / len(all_keywords)) * 100
 
 

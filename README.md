@@ -262,7 +262,7 @@ npm install
 npm run dev
 ```
 
-Open **<http://localhost:3000>** and configure your AI provider in Settings.
+Open **<http://localhost:3001>** and configure your AI provider in Settings.
 
 **Windows 11:** see [Windows 11 Setup](SETUP.md#windows-11-setup) for PowerShell commands.
 
@@ -302,9 +302,9 @@ Prefer pinning a version in production, for example `ghcr.io/srbhr/resume-matche
 
 Endpoints:
 
-- App: <http://localhost:3000>
-- API health check: <http://localhost:3000/api/v1/health>
-- API docs: <http://localhost:3000/docs>
+- App: <http://localhost:3001>
+- API health check: <http://localhost:3001/api/v1/health>
+- API docs: <http://localhost:3001/docs>
 
 > **Using Ollama with Docker?** Use `http://host.docker.internal:11434` as the Ollama URL instead of `localhost` (on Linux, Ollama must also listen beyond `127.0.0.1`; see [SETUP.md](SETUP.md#using-ollama-with-docker)). Docker publishes the app on `127.0.0.1` only; to open it from another device, see [SETUP.md](SETUP.md#opening-it-from-another-device).
 

@@ -264,7 +264,7 @@ npm install
 npm run dev
 ```
 
-Abra **<http://localhost:3000>** e configure o seu provedor de IA em Configurações.
+Abra **<http://localhost:3001>** e configure o seu provedor de IA em Configurações.
 
 **Windows 11:** veja [Instalação no Windows 11](SETUP.pt-BR.md#windows-11-setup) para os comandos do PowerShell.
 
@@ -304,9 +304,9 @@ Em produção, prefira fixar uma versão, por exemplo `ghcr.io/srbhr/resume-matc
 
 Endpoints:
 
-- App: <http://localhost:3000>
-- Verificação de saúde da API: <http://localhost:3000/api/v1/health>
-- Documentação da API: <http://localhost:3000/docs>
+- App: <http://localhost:3001>
+- Verificação de saúde da API: <http://localhost:3001/api/v1/health>
+- Documentação da API: <http://localhost:3001/docs>
 
 > **Usando o Ollama com Docker?** Use `http://host.docker.internal:11434` como URL do Ollama em vez de `localhost` (no Linux, o Ollama também precisa escutar além de `127.0.0.1`; veja [SETUP.pt-BR.md](SETUP.pt-BR.md#using-ollama-with-docker)). O Docker publica o app apenas em `127.0.0.1`; para abri-lo de outro dispositivo, veja [SETUP.pt-BR.md](SETUP.pt-BR.md#opening-it-from-another-device).
 

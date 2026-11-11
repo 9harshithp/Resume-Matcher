@@ -98,7 +98,7 @@ class TestSettings:
 
     def test_default_hosts_are_loopback_and_the_frontend_host(self) -> None:
         hosts = Settings(
-            allowed_hosts="", frontend_base_url="http://localhost:3000"
+            allowed_hosts="", frontend_base_url="http://localhost:3001"
         ).effective_allowed_hosts
         assert hosts == ["127.0.0.1", "::1", "localhost"]
 

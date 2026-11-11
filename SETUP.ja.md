@@ -81,7 +81,7 @@ npm install                  # Node.js 依存関係をインストール
 npm run dev                  # 開発サーバを起動
 ```
 
-ブラウザで **<http://localhost:3000>** を開けば OK です。
+ブラウザで **<http://localhost:3001>** を開けば OK です。
 
 > **注意:** 利用前に AI プロバイダの設定が必要です。下の [AI プロバイダの設定](#configuring-your-ai-provider) を参照してください。
 
@@ -139,7 +139,7 @@ npm install
 npm run dev
 ```
 
-ブラウザで **<http://localhost:3000>** を開きます。
+ブラウザで **<http://localhost:3001>** を開きます。
 
 > **PDF エクスポート:** Resume Matcher はヘッドレス Chromium で PDF を生成します。Chrome は自動で最新に保たれるため、インストール済みの Google Chrome を Chrome のサンドボックスを有効にして優先的に使います。Chrome がない場合は Playwright の Chromium（`apps\backend` で `uv run playwright install chromium` を実行してインストール）を、それもなければ Microsoft Edge を使います（Edge は Windows 11 に標準搭載です）。
 
@@ -197,8 +197,8 @@ LLM_API_KEY=sk-your-api-key-here
 # ローカル開発では既定のままで OK
 HOST=0.0.0.0
 PORT=8000
-FRONTEND_BASE_URL=http://localhost:3000
-CORS_ORIGINS=["http://localhost:3000", "http://127.0.0.1:3000"]
+FRONTEND_BASE_URL=http://localhost:3001
+CORS_ORIGINS=["http://localhost:3001", "http://127.0.0.1:3000"]
 ```
 
 #### Python 依存関係をインストール
@@ -259,10 +259,10 @@ npm run dev
 
 ```
 ▲ Next.js 16.x.x (Turbopack)
-- Local:        http://localhost:3000
+- Local:        http://localhost:3001
 ```
 
-ブラウザで **<http://localhost:3000>** を開くと、Resume Matcher のダッシュボードが表示されます。
+ブラウザで **<http://localhost:3001>** を開くと、Resume Matcher のダッシュボードが表示されます。
 
 ---
 
@@ -339,7 +339,7 @@ OpenAI 公式の [Sign in with ChatGPT for open-source apps](https://developers.
 
 OpenAI はブラウザを `http://127.0.0.1:<port>/auth/callback` に戻します。`<port>` は Resume Matcher を開いたポート（既定は `3000`）です。フロントエンドがこのパスをバックエンドに転送し、バックエンドはこのコールバックを自身が動作しているマシンからのみ受け付けます。そのため、ブラウザは Resume Matcher を実行しているマシン上で動作している必要があり、`http://localhost:<port>` または `http://127.0.0.1:<port>` として開いてください。トークンは暗号化してバックエンドのデータディレクトリ（`chatgpt_credentials.enc`）に保存されます。**Disconnect** は OpenAI 側でセッションを取り消してトークンを削除し、**Manage usage** は ChatGPT の使用状況設定を開きます。
 
-**Docker:** サインインは、ポート 3000 のみを公開する既定の構成で動作します。コンテナを実行しているマシン上で、Resume Matcher を `http://localhost:3000`（または公開した `PORT`）で開いてください。OpenAI は同じポートにブラウザを戻し、フロントエンドが `/auth/callback` をコンテナ内のバックエンドに転送します。OpenAI は `http://127.0.0.1` へのリダイレクトしか許可しないため、別のコンピューターやリバースプロキシのドメイン経由では動作しません。
+**Docker:** サインインは、ポート 3000 のみを公開する既定の構成で動作します。コンテナを実行しているマシン上で、Resume Matcher を `http://localhost:3001`（または公開した `PORT`）で開いてください。OpenAI は同じポートにブラウザを戻し、フロントエンドが `/auth/callback` をコンテナ内のバックエンドに転送します。OpenAI は `http://127.0.0.1` へのリダイレクトしか許可しないため、別のコンピューターやリバースプロキシのドメイン経由では動作しません。
 
 同等の `.env`（サインインは引き続き Settings から行います）：
 
@@ -400,7 +400,7 @@ docker compose -f docker-compose.yml -f docker-compose.postgres.yml up -d
 
 ### Docker の注意点
 
-- **API キーは UI から設定**：<http://localhost:3000/settings>（`.env` ではありません）
+- **API キーは UI から設定**：<http://localhost:3001/settings>（`.env` ではありません）
 - データは Docker volume に永続化されます
 - フロントエンド（3000）とバックエンド（8000）のポートが公開されます
 
@@ -415,15 +415,15 @@ docker compose -f docker-compose.yml -f docker-compose.postgres.yml up -d
 
 | URL | 内容 |
 |-----|------|
-| **<http://localhost:3000>** | メインアプリ（Dashboard） |
-| **<http://localhost:3000/settings>** | AI プロバイダ設定 |
+| **<http://localhost:3001>** | メインアプリ（Dashboard） |
+| **<http://localhost:3001/settings>** | AI プロバイダ設定 |
 | **<http://localhost:8000>** | バックエンド API ルート |
 | **<http://localhost:8000/docs>** | 対話型 API ドキュメント |
 | **<http://localhost:8000/health>** | バックエンドヘルスチェック |
 
 ### 初回セットアップチェックリスト
 
-1. <http://localhost:3000/settings> を開く
+1. <http://localhost:3001/settings> を開く
 2. AI プロバイダを選択
 3. API キーを入力（または Ollama を設定）
 4. "Save Configuration" をクリック
@@ -469,7 +469,7 @@ Cursor、Codex などのクライアントも同じコマンド（`uv`）と引�
 ### 補足
 
 - **同じチェックアウト、同じデータ。** 両方が同じデータベースを使うよう、Web アプリも同じチェックアウトから実行してください。`DATA_DIR` で SQLite ファイルの場所を変更できます。`DATABASE_URL` を設定すると、代わりに [PostgreSQL](#optional-postgresql) を使います。
-- **PDF と verify にはフロントエンドが必要。** PDF エクスポート、`verify_resume`、`tailor_and_verify`、`parse_check_resume` には、フロントエンドが起動している必要があります（既定は <http://localhost:3000>、`FRONTEND_BASE_URL` で変更できます）。その他のツールはフロントエンドなしで動作します。
+- **PDF と verify にはフロントエンドが必要。** PDF エクスポート、`verify_resume`、`tailor_and_verify`、`parse_check_resume` には、フロントエンドが起動している必要があります（既定は <http://localhost:3001>、`FRONTEND_BASE_URL` で変更できます）。その他のツールはフロントエンドなしで動作します。
 - **Docker にはまだ対応していません。** アプリのデータベースは Docker ボリューム内にあるため、ホスト上で起動したサーバからは空のデータベースに見えます。
 
 サーバーには、履歴書と求人票の一覧・取得、マスター履歴書の作成、求人票の登録、履歴書の調整と検証（`tailor_and_verify`）、ATS 向けのパースチェックとスコア算出、PDF の書き出し（`export_resume_pdf`）、応募状況の管理を行うツールが用意されています。接続するとクライアントにツール一覧が表示され、サーバー組み込みの指示が Claude に作業の流れを案内します。

@@ -247,12 +247,12 @@ class TestPlaywrightErrorMapping:
         raw = (
             "Page.goto: Timeout 30000ms exceeded.\n"
             "Call log:\n"
-            '  - navigating to "http://localhost:3000/print/resumes/SECRET-RESUME-ID"'
+            '  - navigating to "http://localhost:3001/print/resumes/SECRET-RESUME-ID"'
         )
         with pytest.raises(PDFRenderError) as exc_info:
             _raise_playwright_error(
                 PlaywrightError(raw),
-                "http://localhost:3000/print/resumes/SECRET-RESUME-ID",
+                "http://localhost:3001/print/resumes/SECRET-RESUME-ID",
             )
         msg = str(exc_info.value)
         assert "Call log" not in msg
@@ -262,8 +262,8 @@ class TestPlaywrightErrorMapping:
     def test_connection_refused_message_preserved(self):
         with pytest.raises(PDFRenderError) as exc_info:
             _raise_playwright_error(
-                PlaywrightError("net::ERR_CONNECTION_REFUSED at http://localhost:3000"),
-                "http://localhost:3000/print/x",
+                PlaywrightError("net::ERR_CONNECTION_REFUSED at http://localhost:3001"),
+                "http://localhost:3001/print/x",
             )
         assert "cannot connect to frontend" in str(exc_info.value).lower()
 

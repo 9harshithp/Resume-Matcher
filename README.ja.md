@@ -250,7 +250,7 @@ npm install
 npm run dev
 ```
 
-**<http://localhost:3000>** を開き、Settings で AI プロバイダを設定してください。
+**<http://localhost:3001>** を開き、Settings で AI プロバイダを設定してください。
 
 ### 対応 AI プロバイダ
 

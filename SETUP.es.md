@@ -81,7 +81,7 @@ npm install                  # Instala dependencias de Node.js
 npm run dev                  # Arranca el servidor de desarrollo
 ```
 
-Abre **<http://localhost:3000>** en el navegador y listo.
+Abre **<http://localhost:3001>** en el navegador y listo.
 
 > **Nota:** antes de usar la app, necesitas configurar un proveedor de IA. Consulta [Configurar tu proveedor de IA](#configuring-your-ai-provider).
 
@@ -139,7 +139,7 @@ npm install
 npm run dev
 ```
 
-Abre **<http://localhost:3000>** en el navegador.
+Abre **<http://localhost:3001>** en el navegador.
 
 > **Exportar PDF:** Resume Matcher genera los PDF con Chromium headless. Prefiere Google Chrome si está instalado, con el sandbox de Chrome activado, porque Chrome se mantiene actualizado solo. Sin Chrome usa el Chromium de Playwright (instálalo desde `apps\backend` con `uv run playwright install chromium`) y, si no, Microsoft Edge (Edge viene con Windows 11).
 
@@ -197,8 +197,8 @@ LLM_API_KEY=sk-your-api-key-here
 # Mantén estos valores por defecto para desarrollo local
 HOST=0.0.0.0
 PORT=8000
-FRONTEND_BASE_URL=http://localhost:3000
-CORS_ORIGINS=["http://localhost:3000", "http://127.0.0.1:3000"]
+FRONTEND_BASE_URL=http://localhost:3001
+CORS_ORIGINS=["http://localhost:3001", "http://127.0.0.1:3000"]
 ```
 
 #### Instalar dependencias de Python
@@ -259,10 +259,10 @@ Deberías ver:
 
 ```
 ▲ Next.js 16.x.x (Turbopack)
-- Local:        http://localhost:3000
+- Local:        http://localhost:3001
 ```
 
-Abre **<http://localhost:3000>** en el navegador. Deberías ver el panel de Resume Matcher.
+Abre **<http://localhost:3001>** en el navegador. Deberías ver el panel de Resume Matcher.
 
 ---
 
@@ -339,7 +339,7 @@ Un proveedor creado por la comunidad que usa el [Sign in with ChatGPT for open-s
 
 OpenAI redirige el navegador a `http://127.0.0.1:<port>/auth/callback`, donde `<port>` es el puerto en el que abriste Resume Matcher (`3000` por defecto). El frontend reenvía esa ruta al backend, y el backend solo acepta la devolución de llamada desde la máquina en la que se ejecuta. Por eso el navegador debe ejecutarse en la máquina que ejecuta Resume Matcher, y debes abrirlo como `http://localhost:<port>` o `http://127.0.0.1:<port>`. Los tokens se guardan cifrados en el directorio de datos del backend (`chatgpt_credentials.enc`). **Disconnect** revoca la sesión en OpenAI y elimina los tokens; **Manage usage** abre los ajustes de uso de tu ChatGPT.
 
-**Docker:** el inicio de sesión funciona con la configuración por defecto, que solo publica el puerto 3000: abre Resume Matcher en `http://localhost:3000` (o en el `PORT` que publicaste) en la máquina que ejecuta el contenedor. OpenAI devuelve el navegador a ese mismo puerto, y el frontend reenvía `/auth/callback` al backend dentro del contenedor. No funciona desde otro ordenador ni a través de un dominio con proxy inverso, porque OpenAI solo permite redirecciones a `http://127.0.0.1`.
+**Docker:** el inicio de sesión funciona con la configuración por defecto, que solo publica el puerto 3000: abre Resume Matcher en `http://localhost:3001` (o en el `PORT` que publicaste) en la máquina que ejecuta el contenedor. OpenAI devuelve el navegador a ese mismo puerto, y el frontend reenvía `/auth/callback` al backend dentro del contenedor. No funciona desde otro ordenador ni a través de un dominio con proxy inverso, porque OpenAI solo permite redirecciones a `http://127.0.0.1`.
 
 El `.env` equivalente (sigues iniciando sesión desde Settings):
 
@@ -400,7 +400,7 @@ Como alternativa, copia el archivo fuera del contenedor detenido (`docker cp res
 
 ### Notas importantes sobre Docker
 
-- **Las API keys se configuran desde la UI** en <http://localhost:3000/settings> (no mediante archivos `.env`)
+- **Las API keys se configuran desde la UI** en <http://localhost:3001/settings> (no mediante archivos `.env`)
 - Los datos se persisten en un volumen de Docker
 - Se exponen los puertos del frontend (3000) y del backend (8000)
 
@@ -415,15 +415,15 @@ Cuando ambos servidores estén ejecutándose, abre el navegador:
 
 | URL | Descripción |
 |-----|-------------|
-| **<http://localhost:3000>** | Aplicación principal (Dashboard) |
-| **<http://localhost:3000/settings>** | Configurar proveedor de IA |
+| **<http://localhost:3001>** | Aplicación principal (Dashboard) |
+| **<http://localhost:3001/settings>** | Configurar proveedor de IA |
 | **<http://localhost:8000>** | Raíz de la API del backend |
 | **<http://localhost:8000/docs>** | Documentación interactiva de la API |
 | **<http://localhost:8000/health>** | Health check del backend |
 
 ### Checklist de primera ejecución
 
-1. Abre <http://localhost:3000/settings>
+1. Abre <http://localhost:3001/settings>
 2. Selecciona tu proveedor de IA
 3. Introduce tu API key (o configura Ollama)
 4. Haz clic en "Save Configuration"
@@ -469,7 +469,7 @@ Cursor, Codex y otros clientes usan el mismo comando (`uv`) y los mismos argumen
 ### Notas
 
 - **Mismo repositorio, mismos datos.** Ejecuta la app web desde el mismo repositorio para que ambas usen la misma base de datos. `DATA_DIR` mueve el archivo SQLite; `DATABASE_URL` selecciona [PostgreSQL](#optional-postgresql) en su lugar.
-- **Frontend para PDF y verify.** La exportación a PDF, `verify_resume`, `tailor_and_verify` y `parse_check_resume` necesitan el frontend en ejecución (por defecto <http://localhost:3000>, configurable con `FRONTEND_BASE_URL`). Las demás herramientas funcionan sin él.
+- **Frontend para PDF y verify.** La exportación a PDF, `verify_resume`, `tailor_and_verify` y `parse_check_resume` necesitan el frontend en ejecución (por defecto <http://localhost:3001>, configurable con `FRONTEND_BASE_URL`). Las demás herramientas funcionan sin él.
 - **Docker aún no está soportado.** La base de datos de la app vive dentro del volumen de Docker, así que un servidor iniciado en el host vería una base de datos vacía.
 
 El servidor expone herramientas para listar y leer currículums y descripciones de puesto, crear un currículum maestro, guardar una descripción de puesto, adaptar y verificar un currículum (`tailor_and_verify`), revisar su compatibilidad con ATS y puntuarlo, exportar un PDF (`export_resume_pdf`) y gestionar postulaciones. Tu cliente las lista al conectarse, y las instrucciones integradas del servidor guían a Claude por el flujo de trabajo.

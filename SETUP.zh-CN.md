@@ -81,7 +81,7 @@ npm install                  # 安装 Node.js 依赖
 npm run dev                  # 启动开发服务器
 ```
 
-浏览器打开 **<http://localhost:3000>** 即可。
+浏览器打开 **<http://localhost:3001>** 即可。
 
 > **注意：** 使用应用前需要先配置 AI 提供商。见下方 [配置 AI 提供商](#configuring-your-ai-provider)。
 
@@ -139,7 +139,7 @@ npm install
 npm run dev
 ```
 
-在浏览器中打开 **<http://localhost:3000>**。
+在浏览器中打开 **<http://localhost:3001>**。
 
 > **PDF 导出：** Resume Matcher 使用无头 Chromium 渲染 PDF。由于 Chrome 会自动保持最新，后端优先使用已安装的 Google Chrome，并开启 Chrome 的沙箱。没有 Chrome 时使用 Playwright 的 Chromium（在 `apps\backend` 中运行 `uv run playwright install chromium` 安装），再没有则使用 Microsoft Edge（Windows 11 自带 Edge）。
 
@@ -197,8 +197,8 @@ LLM_API_KEY=sk-your-api-key-here
 # 本地开发建议保持默认
 HOST=0.0.0.0
 PORT=8000
-FRONTEND_BASE_URL=http://localhost:3000
-CORS_ORIGINS=["http://localhost:3000", "http://127.0.0.1:3000"]
+FRONTEND_BASE_URL=http://localhost:3001
+CORS_ORIGINS=["http://localhost:3001", "http://127.0.0.1:3000"]
 ```
 
 #### 安装 Python 依赖
@@ -259,10 +259,10 @@ npm run dev
 
 ```
 ▲ Next.js 16.x.x (Turbopack)
-- Local:        http://localhost:3000
+- Local:        http://localhost:3001
 ```
 
-浏览器打开 **<http://localhost:3000>**，你应该能看到 Resume Matcher 的界面。
+浏览器打开 **<http://localhost:3001>**，你应该能看到 Resume Matcher 的界面。
 
 ---
 
@@ -339,7 +339,7 @@ ollama serve
 
 OpenAI 会将浏览器重定向到 `http://127.0.0.1:<port>/auth/callback`，其中 `<port>` 是你打开 Resume Matcher 时使用的端口（默认为 `3000`）。前端会把该路径转发给后端，而后端只接受来自其所在机器的该回调。因此，浏览器必须运行在运行 Resume Matcher 的那台机器上，并且你应以 `http://localhost:<port>` 或 `http://127.0.0.1:<port>` 的形式打开它。令牌加密存储在后端数据目录中（`chatgpt_credentials.enc`）。**Disconnect** 会在 OpenAI 端撤销会话并删除令牌；**Manage usage** 会打开你的 ChatGPT 用量设置。
 
-**Docker：** 使用只发布 3000 端口的默认配置即可完成登录：请在运行容器的机器上，通过 `http://localhost:3000`（或你发布的 `PORT`）打开 Resume Matcher。OpenAI 会把浏览器带回同一个端口，前端再把 `/auth/callback` 转发给容器内的后端。从另一台电脑或通过反向代理域名访问时无法使用，因为 OpenAI 只允许 `http://127.0.0.1` 的重定向。
+**Docker：** 使用只发布 3000 端口的默认配置即可完成登录：请在运行容器的机器上，通过 `http://localhost:3001`（或你发布的 `PORT`）打开 Resume Matcher。OpenAI 会把浏览器带回同一个端口，前端再把 `/auth/callback` 转发给容器内的后端。从另一台电脑或通过反向代理域名访问时无法使用，因为 OpenAI 只允许 `http://127.0.0.1` 的重定向。
 
 等效的 `.env`（仍需在 Settings 中登录）：
 
@@ -400,7 +400,7 @@ docker compose -f docker-compose.yml -f docker-compose.postgres.yml up -d
 
 ### Docker 重要说明
 
-- **API Key 通过 UI 配置**：<http://localhost:3000/settings>（不是通过 `.env` 文件）
+- **API Key 通过 UI 配置**：<http://localhost:3001/settings>（不是通过 `.env` 文件）
 - 数据会保存在 Docker volume 中
 - 暴露前端（3000）与后端（8000）端口
 
@@ -415,15 +415,15 @@ docker compose -f docker-compose.yml -f docker-compose.postgres.yml up -d
 
 | URL | 说明 |
 |-----|------|
-| **<http://localhost:3000>** | 主应用（Dashboard） |
-| **<http://localhost:3000/settings>** | 配置 AI 提供商 |
+| **<http://localhost:3001>** | 主应用（Dashboard） |
+| **<http://localhost:3001/settings>** | 配置 AI 提供商 |
 | **<http://localhost:8000>** | 后端 API 根路径 |
 | **<http://localhost:8000/docs>** | 可交互的 API 文档 |
 | **<http://localhost:8000/health>** | 后端健康检查 |
 
 ### 首次配置检查清单
 
-1. 打开 <http://localhost:3000/settings>
+1. 打开 <http://localhost:3001/settings>
 2. 选择你的 AI 提供商
 3. 填写 API Key（或配置 Ollama）
 4. 点击 “Save Configuration”
@@ -469,7 +469,7 @@ Cursor、Codex 和其他客户端使用相同的命令（`uv`）和参数（`run
 ### 注意事项
 
 - **同一份代码，同一份数据。** 请从同一份代码目录运行 Web 应用，这样两者使用同一个数据库。`DATA_DIR` 可以移动 SQLite 文件；`DATABASE_URL` 则改为选用 [PostgreSQL](#optional-postgresql)。
-- **PDF 和 verify 需要前端。** PDF 导出、`verify_resume`、`tailor_and_verify` 和 `parse_check_resume` 需要前端处于运行状态（默认 <http://localhost:3000>，可通过 `FRONTEND_BASE_URL` 设置）。其他工具无需前端即可使用。
+- **PDF 和 verify 需要前端。** PDF 导出、`verify_resume`、`tailor_and_verify` 和 `parse_check_resume` 需要前端处于运行状态（默认 <http://localhost:3001>，可通过 `FRONTEND_BASE_URL` 设置）。其他工具无需前端即可使用。
 - **暂不支持 Docker。** 应用的数据库位于 Docker 卷中，因此在主机上启动的服务器看到的会是一个空数据库。
 
 该服务器提供的工具可用于列出和读取简历与职位描述、创建主简历、添加职位描述、定制并验证简历（`tailor_and_verify`）、进行 ATS 解析检查并评分、导出 PDF（`export_resume_pdf`）以及管理投递记录。连接后客户端会列出这些工具，服务器内置的说明也会引导 Claude 完成整个流程。

@@ -6,7 +6,7 @@ argument-hint: "[setup | tailor | <job description>]"
 
 # Resume Matcher, driven by you
 
-You are the AI. The `resume-matcher` command stores, validates, scores and renders what you write, in the same database as the web app, so everything you save appears at <http://localhost:3000>. The user makes small edits there.
+You are the AI. The `resume-matcher` command stores, validates, scores and renders what you write, in the same database as the web app, so everything you save appears at <http://localhost:3001>. The user makes small edits there.
 
 Work in this order: **set up** (once), **master resume** (once), **tailor** (per job), **hand off** to the UI. Skip a step that is already done. Talk to the user in their language.
 
@@ -38,7 +38,7 @@ File arguments are then read inside the container, so pass a whole JSON object o
 Check whether the app is already running:
 
 ```bash
-curl -s http://localhost:3000/api/v1/health
+curl -s http://localhost:3001/api/v1/health
 ```
 
 `{"status":"healthy"}` means it is up: go to **Agent mode** below. Otherwise ask the user which install they want (if their request already says, that is the answer), and recommend local when `uv` and Node are installed:
@@ -54,29 +54,29 @@ curl -s http://localhost:3000/api/v1/health
   (cd apps/backend && nohup uv run app > ../../jobs/.work/backend.log 2>&1 &)    # API on :8000
   for i in $(seq 60); do curl -sf http://127.0.0.1:8000/api/v1/health > /dev/null && break; sleep 2; done
   (cd apps/frontend && nohup npm run dev > ../../jobs/.work/frontend.log 2>&1 &) # web app on :3000
-  for i in $(seq 60); do curl -sf http://localhost:3000/api/v1/health > /dev/null && break; sleep 2; done
+  for i in $(seq 60); do curl -sf http://localhost:3001/api/v1/health > /dev/null && break; sleep 2; done
   ```
 
   If a health check still fails after two minutes, read the log in `jobs/.work/`. On Windows use PowerShell: `Copy-Item .env.example .env` instead of `cp`, and start each server with `Start-Process` (or ask the user to run each in its own PowerShell window). Until agent mode is on, the backend log shows an LLM health-check error from the placeholder key in `.env`; it is harmless.
 
-- **Docker** needs Docker Desktop or Docker Engine. From the repository root, run `docker compose up -d --build`. Building from this checkout includes the command-line tool, which older published images lack. The app is on <http://localhost:3000>.
+- **Docker** needs Docker Desktop or Docker Engine. From the repository root, run `docker compose up -d --build`. Building from this checkout includes the command-line tool, which older published images lack. The app is on <http://localhost:3001>.
 
 Wait until the health check answers before going on. More detail and troubleshooting: [SETUP.md](../../../SETUP.md).
 
 ### Agent mode
 
 ```bash
-curl -s http://localhost:3000/api/v1/status
+curl -s http://localhost:3001/api/v1/status
 ```
 
 If `agent_mode` is `false`, ask the user before switching it on (a request that already asks for agent mode, or for no API key, counts as yes). It makes the app stop calling an AI model and show prompts for you instead. Saved API keys are kept, and the user can switch back in Settings at any time.
 
 ```bash
-curl -s -X PUT http://localhost:3000/api/v1/config/llm-api-key \
+curl -s -X PUT http://localhost:3001/api/v1/config/llm-api-key \
   -H 'Content-Type: application/json' -d '{"provider":"agent"}'
 ```
 
-On Windows: `Invoke-RestMethod -Method Put -Uri http://localhost:3000/api/v1/config/llm-api-key -ContentType 'application/json' -Body '{"provider":"agent"}'`. The user can also pick **Coding agent** under Settings > LLM configuration.
+On Windows: `Invoke-RestMethod -Method Put -Uri http://localhost:3001/api/v1/config/llm-api-key -ContentType 'application/json' -Body '{"provider":"agent"}'`. The user can also pick **Coding agent** under Settings > LLM configuration.
 
 ## 2. Master resume (once)
 
@@ -96,7 +96,7 @@ Run `get_status`. If `master_resumes` is 0, ask the user for their resume file (
     "additional": {"technicalSkills": ["Python"], "languages": [], "certificationsTraining": [], "awards": []}}
    ```
 3. `create_master_resume resume_data:=@/abs/path/jobs/.work/master.json` (optionally `title=…`).
-4. Ask the user to check it at `http://localhost:3000/resumes/<resume_id>` and fix anything in the editor.
+4. Ask the user to check it at `http://localhost:3001/resumes/<resume_id>` and fix anything in the editor.
 
 With several masters (up to 5, e.g. one per career track), `list_resumes` shows them; tailor from the one that fits the job, or the default.
 
@@ -161,11 +161,11 @@ These are the rules the app's own tailoring follows, and the validator enforces 
 
 ## 4. Hand off to the UI
 
-When done, give the user a short table: role and company, ATS score (`score.overall_score`), pages, remaining issues and gaps, and the link `http://localhost:3000/builder?id=<resume_id>`. Then tell them:
+When done, give the user a short table: role and company, ATS score (`score.overall_score`), pages, remaining issues and gaps, and the link `http://localhost:3001/builder?id=<resume_id>`. Then tell them:
 
-- The dashboard lists every resume: <http://localhost:3000/dashboard>. Open pages update on their own within a few seconds of each save, so there is no need to reload.
+- The dashboard lists every resume: <http://localhost:3001/dashboard>. Open pages update on their own within a few seconds of each save, so there is no need to reload.
 - In the editor they can change any text, section order, template and formatting. Changes save automatically, and **Download** exports the PDF.
-- The application tracker is at <http://localhost:3000/tracker>.
+- The application tracker is at <http://localhost:3001/tracker>.
 - The app's AI buttons show a prompt to paste back to you.
 - If they are editing a resume while you save it, the editor asks them whether to keep their edits or take yours. Prefer to work on resumes they are not editing.
 

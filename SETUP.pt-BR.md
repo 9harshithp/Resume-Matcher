@@ -84,7 +84,7 @@ npm install                  # Instala as dependências Node.js
 npm run dev                  # Inicia o servidor de desenvolvimento
 ```
 
-Abra o navegador em **<http://localhost:3000>** e pronto!
+Abra o navegador em **<http://localhost:3001>** e pronto!
 
 > **Observação:** você precisará configurar um provedor de IA antes de usar o app. Veja [Configurar seu provedor de IA](#configuring-your-ai-provider) abaixo.
 
@@ -143,7 +143,7 @@ npm install
 npm run dev
 ```
 
-Abra **<http://localhost:3000>** no navegador.
+Abra **<http://localhost:3001>** no navegador.
 
 > **Exportação de PDF:** o Resume Matcher gera PDFs com o Chromium headless. Ele prefere o Google Chrome instalado, com o sandbox do Chrome ativado, porque o Chrome se mantém atualizado sozinho. Sem o Chrome, usa o Chromium do Playwright (instale-o a partir de `apps\backend` com `uv run playwright install chromium`) e, depois, o Microsoft Edge (o Edge já vem no Windows 11).
 
@@ -204,8 +204,8 @@ LLM_API_KEY=sk-your-api-key-here
 # Mantenha estes valores padrão para desenvolvimento local
 HOST=127.0.0.1
 PORT=8000
-FRONTEND_BASE_URL=http://localhost:3000
-CORS_ORIGINS=["http://localhost:3000", "http://127.0.0.1:3000"]
+FRONTEND_BASE_URL=http://localhost:3001
+CORS_ORIGINS=["http://localhost:3001", "http://127.0.0.1:3000"]
 ```
 
 #### Instale as dependências Python
@@ -267,10 +267,10 @@ Você deve ver:
 
 ```
 ▲ Next.js 16.x.x (Turbopack)
-- Local:        http://localhost:3000
+- Local:        http://localhost:3001
 ```
 
-Abra **<http://localhost:3000>** no navegador. Você deve ver o painel do Resume Matcher!
+Abra **<http://localhost:3001>** no navegador. Você deve ver o painel do Resume Matcher!
 
 ---
 
@@ -352,7 +352,7 @@ Um provedor criado pela comunidade que usa o [Sign in with ChatGPT para apps de 
 
 A OpenAI redireciona o navegador para `http://127.0.0.1:<port>/auth/callback`, em que `<port>` é a porta em que você abriu o Resume Matcher (`3000` por padrão). O frontend encaminha esse caminho para o backend, e o backend só aceita o callback vindo da própria máquina em que roda. Por isso, o navegador precisa rodar na máquina que executa o Resume Matcher, e você deve abri-lo como `http://localhost:<port>` ou `http://127.0.0.1:<port>`. Os tokens ficam armazenados criptografados no diretório de dados do backend (`chatgpt_credentials.enc`). **Desconectar** (Disconnect) revoga a sessão na OpenAI e apaga os tokens; **Gerenciar uso** (Manage usage) abre as configurações de uso do seu ChatGPT.
 
-**Docker:** o login funciona com a configuração padrão, que publica apenas a porta 3000: abra o Resume Matcher em `http://localhost:3000` (ou na `PORT` que você publicou) na máquina que executa o contêiner. A OpenAI devolve o navegador para essa mesma porta, e o frontend encaminha `/auth/callback` para o backend dentro do contêiner. Não funciona a partir de outro computador nem por um domínio de reverse proxy, porque a OpenAI só permite redirecionamentos para `http://127.0.0.1`.
+**Docker:** o login funciona com a configuração padrão, que publica apenas a porta 3000: abra o Resume Matcher em `http://localhost:3001` (ou na `PORT` que você publicou) na máquina que executa o contêiner. A OpenAI devolve o navegador para essa mesma porta, e o frontend encaminha `/auth/callback` para o backend dentro do contêiner. Não funciona a partir de outro computador nem por um domínio de reverse proxy, porque a OpenAI só permite redirecionamentos para `http://127.0.0.1`.
 
 O `.env` equivalente (você ainda faz o login em Configurações):
 
@@ -396,7 +396,7 @@ PORT=4000 docker compose up -d
 | `PORT` | `3000` | Porta do host mapeada para a porta `3000` do contêiner |
 | `BIND_ADDRESS` | `127.0.0.1` | Endereço do host em que a porta é publicada. `127.0.0.1` = apenas esta máquina; `0.0.0.0` = todas as interfaces de rede (veja abaixo) |
 | `ALLOWED_HOSTS` | - | Nomes de host extras para os quais o app responde, separados por vírgula (ex.: `192.168.1.20`); `*` permite qualquer um |
-| `FRONTEND_BASE_URL` | `http://localhost:3000` | A URL em que você abre o app; o nome de host dela é permitido automaticamente |
+| `FRONTEND_BASE_URL` | `http://localhost:3001` | A URL em que você abre o app; o nome de host dela é permitido automaticamente |
 | `LOG_LEVEL` | `INFO` | Nível de log do Python/Uvicorn em toda a aplicação (`ERROR`, `WARNING`, `INFO`, `DEBUG`) |
 | `LOG_LLM` | `WARNING` | Nível de log do LiteLLM (`ERROR`, `WARNING`, `INFO`, `DEBUG`) |
 | `LLM_PROVIDER` | `openai` | Provedor de IA (openai, anthropic, gemini etc.) |
@@ -551,7 +551,7 @@ docker build \
 
 ### Observações importantes
 
-- **As chaves de API são mais bem configuradas pela interface** em `http://localhost:3000/settings`
+- **As chaves de API são mais bem configuradas pela interface** em `http://localhost:3001/settings`
 - Os dados são persistidos em um volume Docker (`resume-data`)
 - A configuração feita na interface de Configurações fica armazenada no volume e persiste entre reinicializações
 - O app e a API compartilham a mesma origem: frontend em `/`, API em `/api`
@@ -566,14 +566,14 @@ Com o contêiner rodando, abra o navegador:
 
 | URL | Descrição |
 |-----|-----------|
-| **<http://localhost:3000>** | Aplicação principal (Painel) |
-| **<http://localhost:3000/settings>** | Configurar o provedor de IA |
-| **<http://localhost:3000/api/v1/health>** | Verificação de saúde (health check) do backend |
-| **<http://localhost:3000/docs>** | Documentação interativa da API |
+| **<http://localhost:3001>** | Aplicação principal (Painel) |
+| **<http://localhost:3001/settings>** | Configurar o provedor de IA |
+| **<http://localhost:3001/api/v1/health>** | Verificação de saúde (health check) do backend |
+| **<http://localhost:3001/docs>** | Documentação interativa da API |
 
 ### Checklist de primeira configuração
 
-1. Abra <http://localhost:3000/settings>
+1. Abra <http://localhost:3001/settings>
 2. Selecione seu provedor de IA
 3. Informe sua chave de API (ou configure o Ollama)
 4. Clique em "Salvar" (Save)
@@ -597,7 +597,7 @@ O [`AGENTS.md`](AGENTS.md) do repositório (lido por Codex, Cursor, Copilot e An
 - **Ativa o modo agente** depois que você concordar. Você também pode escolher **Agente de código** (Coding agent) em Configurações > Configuração de LLM (Settings > LLM configuration). No modo agente, o app não faz nenhuma chamada de IA por conta própria: botões como Gerar Carta de Apresentação (Generate Cover Letter) mostram um prompt para você colar no seu agente.
 - **Cria o seu currículo mestre** a partir do seu PDF ou DOCX, ou fazendo perguntas a você.
 - **Adapta um currículo por descrição de vaga**. Cole uma descrição de vaga no chat, ou salve várias como arquivos `.md` ou `.txt` em [`jobs/`](jobs/README.md) e peça que ele adapte seu currículo para cada vaga de lá.
-- **Passa o bastão para o app web**: cada currículo adaptado aparece no Painel (Dashboard) em <http://localhost:3000>, onde você o edita e baixa o PDF. As páginas abertas recebem por conta própria o que o agente salvar. Se você tiver edições não salvas na mesma parte, o editor pausa o autosave e pergunta qual versão manter.
+- **Passa o bastão para o app web**: cada currículo adaptado aparece no Painel (Dashboard) em <http://localhost:3001>, onde você o edita e baixa o PDF. As páginas abertas recebem por conta própria o que o agente salvar. Se você tiver edições não salvas na mesma parte, o editor pausa o autosave e pergunta qual versão manter.
 
 O agente trabalha pelo comando `resume-matcher`, que executa as mesmas ferramentas do [servidor MCP](#use-resume-matcher-from-claude-code-or-claude-desktop-mcp) e não precisa de configuração:
 
@@ -651,7 +651,7 @@ Cursor, Codex e outros clientes usam o mesmo comando (`uv`) e os mesmos args (`r
 ### Observações
 
 - **Mesmo checkout, mesmos dados.** Rode o app web a partir do mesmo checkout para que os dois usem o mesmo banco de dados. `DATA_DIR` move o arquivo SQLite; `DATABASE_URL` seleciona o [PostgreSQL](#optional-postgresql) no lugar dele.
-- **Frontend para PDF e verify.** A exportação de PDF, `verify_resume`, `tailor_and_verify` e `parse_check_resume` precisam do frontend rodando (padrão <http://localhost:3000>, definido por `FRONTEND_BASE_URL`). As demais ferramentas funcionam sem ele.
+- **Frontend para PDF e verify.** A exportação de PDF, `verify_resume`, `tailor_and_verify` e `parse_check_resume` precisam do frontend rodando (padrão <http://localhost:3001>, definido por `FRONTEND_BASE_URL`). As demais ferramentas funcionam sem ele.
 - **Docker ainda não é compatível.** O banco de dados do app fica dentro do volume Docker, então um servidor iniciado no host enxergaria um banco vazio.
 
 O servidor expõe ferramentas para listar e ler currículos e vagas, criar um currículo mestre, adicionar uma vaga, adaptar e verificar um currículo (`tailor_and_verify`), fazer o parse-check e pontuá-lo para ATS, exportar um PDF (`export_resume_pdf`) e acompanhar candidaturas. Seu cliente as lista assim que conectado, e as instruções embutidas no servidor guiam o Claude pelo fluxo de trabalho.

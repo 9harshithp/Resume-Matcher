@@ -80,7 +80,7 @@ npm install                  # Install Node.js dependencies
 npm run dev                  # Start the dev server
 ```
 
-Open your browser to **<http://localhost:3000>** and you're ready to go!
+Open your browser to **<http://localhost:3001>** and you're ready to go!
 
 > **Note:** You'll need to configure an AI provider before using the app. See [Configuring Your AI Provider](#configuring-your-ai-provider) below.
 
@@ -137,7 +137,7 @@ npm install
 npm run dev
 ```
 
-Open **<http://localhost:3000>** in your browser.
+Open **<http://localhost:3001>** in your browser.
 
 > **PDF export:** Resume Matcher renders PDFs with headless Chromium. It prefers an installed Google Chrome, with Chrome's sandbox on, because Chrome keeps itself up to date. Without Chrome it uses Playwright's Chromium (install it from `apps\backend` with `uv run playwright install chromium`), then an installed Microsoft Edge (Edge ships with Windows 11).
 
@@ -192,8 +192,8 @@ LLM_API_KEY=sk-your-api-key-here
 # Keep these as default for local development
 HOST=127.0.0.1
 PORT=8000
-FRONTEND_BASE_URL=http://localhost:3000
-CORS_ORIGINS=["http://localhost:3000", "http://127.0.0.1:3000"]
+FRONTEND_BASE_URL=http://localhost:3001
+CORS_ORIGINS=["http://localhost:3001", "http://127.0.0.1:3000"]
 ```
 
 #### Install Python dependencies
@@ -253,10 +253,10 @@ You should see:
 
 ```
 ▲ Next.js 16.x.x (Turbopack)
-- Local:        http://localhost:3000
+- Local:        http://localhost:3001
 ```
 
-Open **<http://localhost:3000>** in your browser. You should see the Resume Matcher dashboard!
+Open **<http://localhost:3001>** in your browser. You should see the Resume Matcher dashboard!
 
 ---
 
@@ -330,7 +330,7 @@ A community-built provider that uses OpenAI's official [Sign in with ChatGPT for
 
 OpenAI sends the browser back to `http://127.0.0.1:<port>/auth/callback`, where `<port>` is the port you opened Resume Matcher on (`3000` by default). The frontend forwards that path to the backend, and the backend accepts the callback only from the machine it runs on. So the browser must run on the machine that runs Resume Matcher, and you must open it as `http://localhost:<port>` or `http://127.0.0.1:<port>`. Tokens are stored encrypted in the backend data directory (`chatgpt_credentials.enc`). **Disconnect** revokes the session at OpenAI and deletes the tokens; **Manage usage** opens your ChatGPT usage settings.
 
-**Docker:** sign-in works with the default setup, which publishes only port 3000: open Resume Matcher at `http://localhost:3000` (or the `PORT` you published) on the machine that runs the container. OpenAI returns the browser to that same port, and the frontend forwards `/auth/callback` to the backend inside the container. It does not work from another computer or through a reverse-proxy domain, because OpenAI only allows `http://127.0.0.1` redirects.
+**Docker:** sign-in works with the default setup, which publishes only port 3000: open Resume Matcher at `http://localhost:3001` (or the `PORT` you published) on the machine that runs the container. OpenAI returns the browser to that same port, and the frontend forwards `/auth/callback` to the backend inside the container. It does not work from another computer or through a reverse-proxy domain, because OpenAI only allows `http://127.0.0.1` redirects.
 
 The equivalent `.env` (you still sign in from Settings):
 
@@ -372,7 +372,7 @@ PORT=4000 docker compose up -d
 | `PORT` | `3000` | Host port mapped to container port `3000` |
 | `BIND_ADDRESS` | `127.0.0.1` | Host address the port is published on. `127.0.0.1` = this machine only; `0.0.0.0` = every network interface (see below) |
 | `ALLOWED_HOSTS` | — | Extra hostnames the app answers for, comma-separated (e.g. `192.168.1.20`); `*` allows any |
-| `FRONTEND_BASE_URL` | `http://localhost:3000` | The URL you open the app at; its hostname is allowed automatically |
+| `FRONTEND_BASE_URL` | `http://localhost:3001` | The URL you open the app at; its hostname is allowed automatically |
 | `LOG_LEVEL` | `INFO` | Application-wide Python/Uvicorn log level (`ERROR`, `WARNING`, `INFO`, `DEBUG`) |
 | `LOG_LLM` | `WARNING` | LiteLLM log level (`ERROR`, `WARNING`, `INFO`, `DEBUG`) |
 | `LLM_PROVIDER` | `openai` | AI provider (openai, anthropic, gemini, etc.) |
@@ -521,7 +521,7 @@ docker build \
 
 ### Important Notes
 
-- **API keys are best configured through the UI** at `http://localhost:3000/settings`
+- **API keys are best configured through the UI** at `http://localhost:3001/settings`
 - Data is persisted in a Docker volume (`resume-data`)
 - The Settings UI configuration is stored in the volume and persists across restarts
 - App and API share the same origin: frontend on `/`, API on `/api`
@@ -534,14 +534,14 @@ Once the container is running, open your browser:
 
 | URL | Description |
 |-----|-------------|
-| **<http://localhost:3000>** | Main application (Dashboard) |
-| **<http://localhost:3000/settings>** | Configure AI provider |
-| **<http://localhost:3000/api/v1/health>** | Backend health check |
-| **<http://localhost:3000/docs>** | Interactive API documentation |
+| **<http://localhost:3001>** | Main application (Dashboard) |
+| **<http://localhost:3001/settings>** | Configure AI provider |
+| **<http://localhost:3001/api/v1/health>** | Backend health check |
+| **<http://localhost:3001/docs>** | Interactive API documentation |
 
 ### First-Time Setup Checklist
 
-1. Open <http://localhost:3000/settings>
+1. Open <http://localhost:3001/settings>
 2. Select your AI provider
 3. Enter your API key (or configure Ollama)
 4. Click "Save Configuration"
@@ -563,7 +563,7 @@ The repository's [`AGENTS.md`](AGENTS.md) (read by Codex, Cursor, Copilot and An
 - **Turns on agent mode** once you agree. You can also choose **Coding agent** under Settings > LLM configuration. In agent mode the app makes no AI calls of its own: buttons such as Generate Cover Letter show a prompt to paste into your agent.
 - **Creates your master resume** from your PDF or DOCX, or by asking you questions.
 - **Tailors one resume per job description**. Paste a job description in the chat, or save several as `.md` or `.txt` files in [`jobs/`](jobs/README.md) and ask it to tailor your resume for every job there.
-- **Hands off to the web app**: each tailored resume appears on the dashboard at <http://localhost:3000>, where you edit it and download the PDF. Open pages pick up the agent's saves on their own. If you have unsaved edits to the same part, the editor pauses autosave and asks which version to keep.
+- **Hands off to the web app**: each tailored resume appears on the dashboard at <http://localhost:3001>, where you edit it and download the PDF. Open pages pick up the agent's saves on their own. If you have unsaved edits to the same part, the editor pauses autosave and asks which version to keep.
 
 The agent works through the `resume-matcher` command, which runs the same tools as the [MCP server](#use-resume-matcher-from-claude-code-or-claude-desktop-mcp) and needs no configuration:
 
@@ -615,7 +615,7 @@ Cursor, Codex and other clients use the same command (`uv`) and args (`run --dir
 ### Notes
 
 - **Same checkout, same data.** Run the web app from the same checkout so both use the same database. `DATA_DIR` moves the SQLite file; `DATABASE_URL` selects [PostgreSQL](#optional-postgresql) instead.
-- **Frontend for PDF and verify.** PDF export, `verify_resume`, `tailor_and_verify` and `parse_check_resume` need the frontend running (default <http://localhost:3000>, set with `FRONTEND_BASE_URL`). The other tools work without it.
+- **Frontend for PDF and verify.** PDF export, `verify_resume`, `tailor_and_verify` and `parse_check_resume` need the frontend running (default <http://localhost:3001>, set with `FRONTEND_BASE_URL`). The other tools work without it.
 - **Docker is not supported yet.** The app's database lives inside the Docker volume, so a server started on the host would see an empty database.
 
 The server exposes tools to list and read resumes and jobs, create a master resume, add a job, tailor and verify a resume (`tailor_and_verify`), parse-check and score it for ATS, export a PDF (`export_resume_pdf`) and track job applications. Your client lists them once connected, and the server's built-in instructions walk Claude through the workflow.

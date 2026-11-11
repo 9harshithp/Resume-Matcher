@@ -23,7 +23,8 @@ import re
 from typing import Any
 
 from app.services.ats_parse.roundtrip import CONDENSED_ORDER
-from app.services.text_match import keyword_in_text
+from app.services.skill_aliases import get_skill_aliases
+from app.services.text_match import find_matching_alias, keyword_in_text
 
 logger = logging.getLogger(__name__)
 
@@ -139,11 +140,13 @@ def _rendered_content(resume: dict[str, Any]) -> dict[str, Any]:
 def _compute_skills_coverage(
     resume: dict[str, Any],
     job_keywords: dict[str, Any],
+    allow_aliases: bool = True,
 ) -> float:
     """Return skills coverage score (0–100).
 
     Checks how many required_skills / preferred_skills from the JD appear
     in the resume's technicalSkills list (falls back to full-text search).
+    Also supports canonical skill aliases when allow_aliases=True.
     """
     jd_skills: list[str] = []
     jd_skills.extend(job_keywords.get("required_skills", []))
@@ -165,8 +168,12 @@ def _compute_skills_coverage(
             continue
         skill_lower = skill.lower()
         # Direct skill list match or whole-word text match (resume_text is pre-lowercased)
-        if skill_lower in resume_skills_lower or keyword_in_text(skill, resume_text):
+        if skill_lower in resume_skills_lower or keyword_in_text(skill, resume_text, allow_aliases=allow_aliases):
             matched += 1
+        elif allow_aliases:
+            aliases = get_skill_aliases(skill_lower)
+            if any(a in resume_skills_lower for a in aliases):
+                matched += 1
 
     return min(100.0, (matched / len(jd_skills)) * 100)
 
@@ -293,6 +300,7 @@ def _generate_recommendations(
     role: str,
     missing_keywords: list[str],
     injectable_keywords: list[str],
+    alias_matches: list[dict[str, str]] | None = None,
 ) -> list[str]:
     tips: list[str] = []
     keyword_score = sub_scores["keyword_match"] or 0.0
@@ -306,6 +314,15 @@ def _generate_recommendations(
             f'Use the exact job title "{role}" in your resume headline. Recruiters '
             "filter by title literally, so synonyms are missed. Edit the headline in "
             "the Builder; tailoring does not change it."
+        )
+
+    if alias_matches:
+        examples = ", ".join(
+            f"'{m['keyword']}' (matched as '{m['matched_as']}')"
+            for m in alias_matches[:3]
+        )
+        tips.append(
+            f"Skills recognized via equivalents: {examples}. While modern ATS parse these, also including the exact literal phrasing helps with older keyword filters."
         )
 
     if keyword_score < 60 and missing_keywords:
@@ -368,6 +385,22 @@ def compute_ats_score(
     """
     missing_keywords = _in_posting_order(missing_keywords, job_keywords)
     injectable_keywords = _in_posting_order(injectable_keywords, job_keywords)
+
+    content = _rendered_content(refined_resume)
+    resume_text = _extract_all_text(content).lower()
+    all_jd_terms: list[str] = []
+    for f in ("required_skills", "preferred_skills", "keywords"):
+        for term in job_keywords.get(f) or []:
+            if isinstance(term, str) and term not in all_jd_terms:
+                all_jd_terms.append(term)
+
+    alias_matches: list[dict[str, str]] = []
+    for term in all_jd_terms:
+        if not keyword_in_text(term, resume_text, allow_aliases=False):
+            matched_alias = find_matching_alias(term, resume_text)
+            if matched_alias and matched_alias != term.lower():
+                alias_matches.append({"keyword": term, "matched_as": matched_alias})
+
     sub_scores: dict[str, float | None] = {
         "keyword_match": min(100.0, max(0.0, keyword_match_percentage)),
         "skills_coverage": _compute_skills_coverage(refined_resume, job_keywords),
@@ -392,10 +425,12 @@ def compute_ats_score(
         },
         "missing_keywords": missing_keywords[:10],
         "injectable_keywords": injectable_keywords[:10],
+        "alias_matches": alias_matches[:10],
         "recommendations": _generate_recommendations(
             sub_scores,
             str(job_keywords.get("role") or "").strip(),
             missing_keywords,
             injectable_keywords,
+            alias_matches,
         ),
     }
